@@ -1,11 +1,13 @@
 package top.beliefyu.fstream.client.api;
 
+import top.beliefyu.fstream.client.api.function.MapperFunction;
 import top.beliefyu.fstream.client.api.function.SourceFunction;
 import top.beliefyu.fstream.client.api.operator.DataOperator;
+import top.beliefyu.fstream.client.api.operator.MapOperator;
 import top.beliefyu.fstream.client.api.operator.SourceOperator;
 
 import java.util.Collection;
-import java.util.Collections;
+import java.util.HashSet;
 
 /**
  * DataStream
@@ -18,31 +20,38 @@ import java.util.Collections;
 public class DataStream<T> {
     /**
      * DAG的头结点集合
-     * @date 2020-02-12 22:25
-     * @author yuxinyang
      */
-    private static Collection<? super DataStream> TREE_HEAD = Collections.emptySet();
+    private static Collection<? super DataStream> TREE_HEAD = new HashSet<>();
 
 
-    private Collection<? super DataOperator> parentOperator = Collections.emptySet();
+    private Collection<? super DataOperator> parentOperator = new HashSet<>();
     private DataOperator operator;
-    private Collection<? super DataOperator> childOperator = Collections.emptySet();
+    private Collection<? super DataOperator> childOperator = new HashSet<>();
 
     private DataStream() {
     }
 
-    public <OUT> DataStream(SourceFunction<OUT> function) {
+    public DataStream(SourceFunction<T> function) {
         setSource(function);
+    }
+
+
+    public <OUT> DataStream<OUT> map(MapperFunction<T, OUT> function) {
+        DataStream<OUT> nextDataStream = new DataStream<>();
+        nextDataStream.parentOperator.add(this.operator);
+        nextDataStream.operator = new MapOperator(function);
+        buildNextOperator(nextDataStream.operator);
+        return nextDataStream;
     }
 
     private <OUT> void setSource(SourceFunction<OUT> function) {
         parentOperator = null;
-        operator = new SourceOperator<>();
+        operator = new SourceOperator(function);
         TREE_HEAD.add(this);
     }
 
-    public class Test extends DataStream{
-
+    private void buildNextOperator(DataOperator operator) {
+        childOperator.add(operator);
     }
 
     public void start() {
