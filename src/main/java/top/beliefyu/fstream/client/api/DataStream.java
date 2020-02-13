@@ -5,6 +5,7 @@ import top.beliefyu.fstream.client.api.function.FlatMapFunction;
 import top.beliefyu.fstream.client.api.function.MapFunction;
 import top.beliefyu.fstream.client.api.function.SourceFunction;
 import top.beliefyu.fstream.client.api.operator.*;
+import top.beliefyu.fstream.client.api.window.WindowAssigner;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -73,7 +74,9 @@ public class DataStream<T> {
         return outDataStream;
     }
 
-    public DataStream<T> window
+    public <OUT> DataStream<OUT> window(WindowAssigner assigner) {
+        return buildNextDataStream(new WindowOperator(assigner));
+    }
 
     private <OUT> DataStream<OUT> buildNextDataStream(DataOperator operator) {
         DataStream<OUT> nextDataStream = new DataStream<>();
