@@ -67,17 +67,13 @@ public class DataStream<T> {
         return buildNextDataStream(new FilterOperator(function));
     }
 
-    public <OUT> DataStream<OUT> keyBy(String... name) {
-        DataStream<OUT> outDataStream = buildNextDataStream(new KeyByOperator(Arrays.asList(name)));
+    public DataStream<T> keyBy(String... name) {
+        DataStream<T> outDataStream = buildNextDataStream(new KeyByOperator(Arrays.asList(name)));
         outDataStream.isMultipleOutput = true;
         return outDataStream;
     }
 
-    public <OUT> DataStream<OUT> keyBy(int... pos) {
-        DataStream<OUT> outDataStream = buildNextDataStream(new KeyByOperator(pos));
-        outDataStream.isMultipleOutput = true;
-        return outDataStream;
-    }
+    public DataStream<T> window
 
     private <OUT> DataStream<OUT> buildNextDataStream(DataOperator operator) {
         DataStream<OUT> nextDataStream = new DataStream<>();

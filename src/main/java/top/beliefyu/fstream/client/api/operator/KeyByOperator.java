@@ -13,8 +13,4 @@ public class KeyByOperator implements DataOperator {
     public KeyByOperator(List<String> keyName){
 
     }
-
-    public KeyByOperator(int[] pos){
-
-    }
 }
