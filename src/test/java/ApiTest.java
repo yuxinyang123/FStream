@@ -1,6 +1,5 @@
 import org.junit.jupiter.api.Test;
 import top.beliefyu.fstream.client.api.DataStream;
-import top.beliefyu.fstream.client.api.function.MapperFunction;
 
 /**
  * ApiTest

@@ -1,12 +1,13 @@
 package top.beliefyu.fstream.client.api.function;
 
 /**
- * MapperFunction
+ * MapFunction
  *
  * @author yuxinyang
  * @version 1.0
  * @date 2020-02-13 00:46
  */
-public interface MapperFunction<IN, OUT> {
+@FunctionalInterface
+public interface MapFunction<IN, OUT> extends UserFunction {
     public OUT transfer(IN msg);
 }

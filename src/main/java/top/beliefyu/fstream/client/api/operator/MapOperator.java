@@ -1,6 +1,6 @@
 package top.beliefyu.fstream.client.api.operator;
 
-import top.beliefyu.fstream.client.api.function.MapperFunction;
+import top.beliefyu.fstream.client.api.function.MapFunction;
 
 /**
  * MapOperator
@@ -10,6 +10,6 @@ import top.beliefyu.fstream.client.api.function.MapperFunction;
  * @date 2020-02-13 00:21
  */
 public class MapOperator implements DataOperator {
-    public <IN, OUT> MapOperator(MapperFunction<IN, OUT> function) {
+    public <IN, OUT> MapOperator(MapFunction<IN, OUT> function) {
     }
 }
