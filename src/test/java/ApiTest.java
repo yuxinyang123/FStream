@@ -1,6 +1,8 @@
 import org.junit.jupiter.api.Test;
 import top.beliefyu.fstream.client.api.DataStream;
 
+import java.util.stream.Collectors;
+
 /**
  * ApiTest
  *
@@ -11,10 +13,14 @@ import top.beliefyu.fstream.client.api.DataStream;
 class ApiTest {
 
     @Test
-    void buildTest(){
+    void buildTest() {
         DataStream<Integer> dataStream = new DataStream<>(() -> 110);
         DataStream<Long> map = dataStream.map(Integer::longValue);
-        System.out.println(map);
+        DataStream<Long> filter = map.filter(i -> i.compareTo(0L) > 0);
+        DataStream<Character> flatMap = filter.flatMap((i, c) ->
+                c.addAll(i.toString().chars().mapToObj(ii -> (char) ii).collect(Collectors.toList()))
+        );
+        System.out.println(flatMap);
     }
 
 }

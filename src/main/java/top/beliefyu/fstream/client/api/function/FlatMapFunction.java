@@ -11,5 +11,5 @@ import java.util.Collection;
  */
 @FunctionalInterface
 public interface FlatMapFunction<IN, OUT> {
-    public Collection<OUT> transfer(IN msg);
+    public void transfer(IN msg, Collection<OUT> collects);
 }

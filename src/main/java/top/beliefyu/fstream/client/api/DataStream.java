@@ -53,7 +53,7 @@ public class DataStream<T> {
         return buildNextDataStream(new FlatMapOperator(function));
     }
 
-    public <OUT> DataStream<OUT> filter(FilterFunction<OUT> function) {
+    public DataStream<T> filter(FilterFunction<T> function) {
         return buildNextDataStream(new FilterOperator(function));
     }
 
