@@ -6,6 +6,7 @@ import top.beliefyu.fstream.client.api.window.WindowAssigner;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.UUID;
 
 import static java.util.Arrays.asList;
 
@@ -21,12 +22,12 @@ public class DataStream<T> {
     /**
      * DAG的头引用集合
      */
-    private static Collection<? super DataStream> TREE_HEAD = new HashSet<>();
+    private static final Collection<? super DataStream> TREE_HEAD = new HashSet<>();
 
     /**
      * DAG所有流引用
      */
-    private static Collection<? super DataStream> TREE_NODE = new HashSet<>();
+    private static final Collection<? super DataStream> TREE_NODE = new HashSet<>();
 
     /**
      * DAG算子节点
@@ -34,6 +35,9 @@ public class DataStream<T> {
     private Collection<? super DataOperator> parentOperator = new HashSet<>();
     private DataOperator operator;
     private Collection<? super DataOperator> childOperator = new HashSet<>();
+
+    private final String uid = UUID.randomUUID().toString();
+    private String name = uid;
 
     /**
      * 判断是否为多输出流，输出算子为keyBy等
@@ -98,13 +102,44 @@ public class DataStream<T> {
         nextDataStream.operator = operator;
 
         childOperator.add(operator);
-        TREE_NODE.add(this);
+        TREE_NODE.add(nextDataStream);
         return nextDataStream;
     }
 
+    public DataStream<T> name(String name) {
+        this.name = name;
+        return this;
+    }
 
     public void start() {
 
     }
 
+    public static Collection<? super DataStream> getTreeHead() {
+        return TREE_HEAD;
+    }
+
+    public static Collection<? super DataStream> getTreeNode() {
+        return TREE_NODE;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+
+    @Override
+    public String toString() {
+        if (name.equals(uid)) {
+            return String.format("%s@-%s", uid.substring(0, 8),
+                    operator.getClass().getSimpleName().split("Operator")[0]);
+        } else {
+            return String.format("%s-%s@-%s", name, uid.substring(0, 8), operator.getClass().getSimpleName().split("Operator")[0]);
+        }
+
+    }
 }
