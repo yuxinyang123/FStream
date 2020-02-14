@@ -1,9 +1,6 @@
 package top.beliefyu.fstream.client.api;
 
-import top.beliefyu.fstream.client.api.function.FilterFunction;
-import top.beliefyu.fstream.client.api.function.FlatMapFunction;
-import top.beliefyu.fstream.client.api.function.MapFunction;
-import top.beliefyu.fstream.client.api.function.SourceFunction;
+import top.beliefyu.fstream.client.api.function.*;
 import top.beliefyu.fstream.client.api.operator.*;
 import top.beliefyu.fstream.client.api.window.WindowAssigner;
 
@@ -76,6 +73,10 @@ public class DataStream<T> {
 
     public <OUT> DataStream<OUT> window(WindowAssigner assigner) {
         return buildNextDataStream(new WindowOperator(assigner));
+    }
+
+    public DataStream<T> setSink(SinkFunction<T> sink) {
+        return buildNextDataStream(new SinkOperator(sink));
     }
 
     private <OUT> DataStream<OUT> buildNextDataStream(DataOperator operator) {

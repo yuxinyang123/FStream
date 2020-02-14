@@ -9,5 +9,5 @@ package top.beliefyu.fstream.client.api.function;
  */
 @FunctionalInterface
 public interface SourceFunction<OUT> extends UserFunction {
-    public OUT get();
+    public OUT transfer();
 }
