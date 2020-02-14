@@ -1,5 +1,6 @@
 import org.junit.jupiter.api.Test;
 import top.beliefyu.fstream.client.api.DataStream;
+import top.beliefyu.fstream.client.api.window.SlidingWindows;
 
 import java.util.stream.Collectors;
 
@@ -20,6 +21,10 @@ class ApiTest {
         DataStream<Character> flatMap = filter.flatMap((i, c) ->
                 c.addAll(i.toString().chars().mapToObj(ii -> (char) ii).collect(Collectors.toList()))
         );
+        DataStream<Integer> dataStream2 = new DataStream<>(() -> 111);
+        DataStream<Integer> union = dataStream.union(dataStream2);
+        DataStream<String> window = union.window(new SlidingWindows());
+        window.setSink(() -> "to sink");
         System.out.println(flatMap);
     }
 
