@@ -4,9 +4,10 @@ import top.beliefyu.fstream.client.api.function.*;
 import top.beliefyu.fstream.client.api.operator.*;
 import top.beliefyu.fstream.client.api.window.WindowAssigner;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+
+import static java.util.Arrays.asList;
 
 /**
  * DataStream
@@ -38,6 +39,10 @@ public class DataStream<T> {
      * 判断是否为多输出流，输出算子为keyBy等
      */
     private boolean isMultipleOutput;
+    /**
+     * 判断是否为多输入流，输出算子为union等
+     */
+    private boolean isMultipleInput;
 
     private DataStream() {
     }
@@ -65,9 +70,16 @@ public class DataStream<T> {
         return buildNextDataStream(new FilterOperator(function));
     }
 
-    public DataStream<T> keyBy(String... name) {
-        DataStream<T> outDataStream = buildNextDataStream(new KeyByOperator(Arrays.asList(name)));
+    public DataStream<T> keyBy(String... names) {
+        DataStream<T> outDataStream = buildNextDataStream(new KeyByOperator(asList(names)));
         outDataStream.isMultipleOutput = true;
+        return outDataStream;
+    }
+
+    @SafeVarargs
+    public final DataStream<T> union(DataStream<? super T>... dataStreams) {
+        DataStream<T> outDataStream = buildNextDataStream(new UnionOperator(asList(dataStreams)));
+        outDataStream.isMultipleInput = true;
         return outDataStream;
     }
 
@@ -75,8 +87,9 @@ public class DataStream<T> {
         return buildNextDataStream(new WindowOperator(assigner));
     }
 
-    public DataStream<T> setSink(SinkFunction<T> sink) {
-        return buildNextDataStream(new SinkOperator(sink));
+    public void setSink(SinkFunction<T> sink) {
+        DataStream<T> sinkStream = buildNextDataStream(new SinkOperator(sink));
+        sinkStream.childOperator = null;
     }
 
     private <OUT> DataStream<OUT> buildNextDataStream(DataOperator operator) {
