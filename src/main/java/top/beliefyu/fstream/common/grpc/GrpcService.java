@@ -10,7 +10,7 @@ import top.beliefyu.fstream.rpc.*;
  * @version 1.0
  * @date 2020-02-17 01:17
  */
-public class GrpcServer extends RpcServerGrpc.RpcServerImplBase {
+public class GrpcService extends RpcServerGrpc.RpcServerImplBase {
     @Override
     public void pullMessage(MessageRequest request, StreamObserver<MessageResponse> responseObserver) {
         responseObserver.onNext(streamToMessage());
