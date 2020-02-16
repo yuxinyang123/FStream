@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>${GROUP_ID}</groupId>
-    <artifactId>${ARTIFACT_ID}</artifactId>
+    <groupId>top.beliefyu</groupId>
+    <artifactId>FStream</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
     <name>${ARTIFACT_ID}</name>
