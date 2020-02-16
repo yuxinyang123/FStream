@@ -2,12 +2,13 @@ package top.beliefyu.fstream.common.netty;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
+import io.netty.channel.epoll.EpollEventLoopGroup;
+import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.bytes.ByteArrayDecoder;
 import io.netty.handler.codec.bytes.ByteArrayEncoder;
-import io.netty.handler.ssl.SslHandshakeCompletionEvent;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.handler.timeout.IdleStateHandler;
@@ -24,23 +25,49 @@ import java.util.concurrent.TimeUnit;
  */
 public class NettyServer {
     private int port;
+    private boolean useEpoll;
+
+    /**
+     * 用来接收进来的连接
+     */
+    private EventLoopGroup bossGroup;
+    /**
+     * 用来处理已经被接收的连接
+     */
+    private EventLoopGroup workerGroup;
 
     public NettyServer(int port) {
         this.port = port;
     }
 
+    public NettyServer(int port, boolean useEpoll) {
+        this.port = port;
+        this.useEpoll = useEpoll;
+    }
+
+    private ServerBootstrap initBootStrap(boolean useEpoll) {
+        Class<? extends ServerChannel> channelClass;
+        if (useEpoll) {
+            bossGroup = new EpollEventLoopGroup();
+            workerGroup = new EpollEventLoopGroup();
+            channelClass = EpollServerSocketChannel.class;
+        } else {
+            bossGroup = new NioEventLoopGroup();
+            workerGroup = new NioEventLoopGroup();
+            channelClass = NioServerSocketChannel.class;
+        }
+        return new ServerBootstrap()
+                .group(bossGroup, workerGroup)
+                //服务端
+                .channel(channelClass);
+    }
+
     public void run() throws Exception {
-        //用来接收进来的连接
-        EventLoopGroup bossGroup = new NioEventLoopGroup();
-        //用来处理已经被接收的连接
-        EventLoopGroup workerGroup = new NioEventLoopGroup();
+
 
         try {
             //启动NIO服务的辅助启动类
-            ServerBootstrap bootstrap = new ServerBootstrap();
-            bootstrap.group(bossGroup, workerGroup)
-                    //服务端
-                    .channel(NioServerSocketChannel.class)
+            ServerBootstrap bootstrap = initBootStrap(useEpoll)
                     .childHandler(new ChannelInitializer<SocketChannel>() {
 
                         @Override
@@ -48,7 +75,7 @@ public class NettyServer {
 
                             //心跳机制 参数:1.读空闲超时时间 2.写空闲超时时间 3.所有类型的空闲超时时间(读、写) 4.时间单位
                             //在Handler需要实现userEventTriggered方法，在出现超时事件时会被触发
-                            socketChannel.pipeline().addLast("idleStateHandler", new IdleStateHandler(60, 0, 0, TimeUnit.SECONDS));
+//                            socketChannel.pipeline().addLast("idleStateHandler", new IdleStateHandler(60, 0, 0, TimeUnit.SECONDS));
                             //设置解码器
                             socketChannel.pipeline().addLast("decoder", new ByteArrayDecoder());
                             socketChannel.pipeline().addLast("channelHandler", new ServerHandler());
@@ -74,9 +101,6 @@ public class NettyServer {
     }
 
     public static class ServerHandler extends ChannelInboundHandlerAdapter {
-        ServerHandler() {
-        }
-
         @Override
         public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
             try {
@@ -85,28 +109,6 @@ public class NettyServer {
                 // 抛弃收到的数据
                 ReferenceCountUtil.release(msg);
             }
-        }
-
-        /**
-         * 心跳检测的超时时会触发
-         *
-         * @param ctx
-         * @param evt
-         * @throws Exception
-         */
-        @Override
-        public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-            if (evt instanceof IdleStateEvent) {
-                IdleStateEvent e = (IdleStateEvent) evt;
-                if (e.state() == IdleState.READER_IDLE) {
-                    System.out.println("trigger channel =" + ctx.channel());
-                    ctx.close();  //如果超时，关闭这个通道
-                }
-            } else if (evt instanceof SslHandshakeCompletionEvent) {
-                System.out.println("ssl handshake done");
-                //super.userEventTriggered(ctx,evt);
-            }
-
         }
     }
 }
