@@ -10,7 +10,11 @@ import java.util.List;
  * @date 2020-02-14 01:15
  */
 public class KeyByOperator implements DataOperator {
-    public KeyByOperator(List<String> keyName){
+    public KeyByOperator(List<String> keyName) {
+
+    }
+
+    public KeyByOperator(int[] pos) {
 
     }
 }
