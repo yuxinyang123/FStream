@@ -4,29 +4,8 @@ option java_multiple_files = true;
 option java_package = "top.beliefyu.fstream.rpc";
 option java_outer_classname = "RpcServerProto";
 
-package rpc;
+package RpcServer;
 
-
-message MessageRequest {
-
-}
-
-message MessageResponse {
-    string key = 1;
-    uint32 timestamp = 2;
-    uint32 watermark = 3;
-    bytes data = 4;
-}
-
-message HeartBeatRequest {
-    uint32 timestamp = 1;
-    string msg = 2;
-}
-
-message HeartBeatResponse {
-    uint32 timestamp = 1;
-    string msg = 2;
-}
 
 service RpcServer {
 
@@ -38,3 +17,23 @@ service RpcServer {
 
 }
 
+message MessageRequest {
+
+}
+
+message MessageResponse {
+    string key = 1;
+    uint64 timestamp = 2;
+    uint64 watermark = 3;
+    bytes data = 4;
+}
+
+message HeartBeatRequest {
+    uint64 timestamp = 1;
+    string msg = 2;
+}
+
+message HeartBeatResponse {
+    uint64 timestamp = 1;
+    string msg = 2;
+}
