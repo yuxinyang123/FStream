@@ -2,7 +2,8 @@ package top.beliefyu.fstream.common.grpc;
 
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -15,7 +16,7 @@ import java.util.concurrent.TimeUnit;
  * @date 2020-02-17 03:07
  */
 public class GrpcServer {
-    private static final Logger logger = Logger.getLogger(GrpcServer.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(GrpcServer.class);
 
     private final int port;
     private final Server server;
