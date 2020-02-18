@@ -25,19 +25,21 @@ public class ZkClient {
 
     public ZkClient(String host, int port) {
         connectString = host + ":" + port;
+        init();
     }
 
 
     private void init() {
         curator = CuratorFrameworkFactory.newClient(connectString,
-                5000, 3000, new RetryNTimes(5, 1000));
+                10000, 5000, new RetryNTimes(5, 1000));
         curator.start();
     }
 
     public void creatEphemeralNode(String path, byte[] data) throws Exception {
         String pathPrefix = path + "-";
+        //无限重连
         curator.getConnectionStateListenable().addListener((CuratorFramework curatorFramework, ConnectionState connectionState) -> {
-            while (true) {
+            while (connectionState == ConnectionState.LOST) {
                 try {
                     if (curatorFramework.getZookeeperClient().blockUntilConnectedOrTimedOut()) {
                         curatorFramework.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL_SEQUENTIAL)
@@ -49,6 +51,7 @@ public class ZkClient {
                 }
             }
         });
+
         curator.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL_SEQUENTIAL)
                 .forPath(pathPrefix, data);
     }
