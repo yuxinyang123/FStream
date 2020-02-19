@@ -4,10 +4,6 @@ import top.beliefyu.fstream.client.api.function.*;
 import top.beliefyu.fstream.client.api.operator.*;
 import top.beliefyu.fstream.client.api.window.WindowAssigner;
 
-import javax.annotation.Nullable;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
@@ -136,6 +132,11 @@ public class DataStream<T> implements Serializable {
         return name;
     }
 
+    public void clear() {
+        TREE_HEAD.clear();
+        TREE_NODE.clear();
+    }
+
 
     @Override
     public String toString() {
@@ -144,19 +145,6 @@ public class DataStream<T> implements Serializable {
                     operator.getClass().getSimpleName().split("Operator")[0]);
         } else {
             return String.format("%s-%s@-%s", name, uid.substring(0, 8), operator.getClass().getSimpleName().split("Operator")[0]);
-        }
-    }
-
-    @Nullable
-    public byte[] toByteArray() {
-        ObjectOutputStream oos = null;
-        try (ByteArrayOutputStream ba = new ByteArrayOutputStream()) {
-            oos = new ObjectOutputStream(ba);
-            oos.writeObject(this);
-            return ba.toByteArray();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
         }
     }
 

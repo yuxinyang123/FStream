@@ -8,6 +8,6 @@ package top.beliefyu.fstream.client.api.function;
  * @date 2020-02-14 21:59
  */
 @FunctionalInterface
-public interface SinkFunction<T> extends UserFunction {
+public interface SinkFunction<T> extends UserDefineFunction {
     public T toSink();
 }

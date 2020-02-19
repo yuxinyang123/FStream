@@ -3,9 +3,11 @@ package top.beliefyu.fstream.common.grpc;
 import io.grpc.stub.StreamObserver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import top.beliefyu.fstream.client.api.DataStream;
 import top.beliefyu.fstream.rpc.DataStreamRequest;
 import top.beliefyu.fstream.rpc.DataStreamResponse;
 import top.beliefyu.fstream.rpc.RpcServerGrpc;
+import top.beliefyu.fstream.util.SerializableUtil;
 
 /**
  * ClientGrpcService
@@ -23,7 +25,8 @@ public class ServerGrpcService extends RpcServerGrpc.RpcServerImplBase {
         pushDataStream(request);
         responseObserver.onNext(buildDataStreamResponse("success"));
         responseObserver.onCompleted();
-        LOGGER.debug("submit success,[{}]");
+        LOGGER.debug("submit success,[{}]",
+                SerializableUtil.<DataStream>toObject(request.getDataStreamBytes().toByteArray()).getName());
     }
 
     private DataStreamResponse buildDataStreamResponse(String msg) {

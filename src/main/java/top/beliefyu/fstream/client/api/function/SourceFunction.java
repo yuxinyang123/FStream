@@ -8,6 +8,6 @@ package top.beliefyu.fstream.client.api.function;
  * @date 2020-02-12 02:01
  */
 @FunctionalInterface
-public interface SourceFunction<OUT> extends UserFunction {
+public interface SourceFunction<OUT> extends UserDefineFunction {
     public OUT transfer();
 }

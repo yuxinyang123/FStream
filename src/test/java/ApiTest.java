@@ -3,6 +3,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.beliefyu.fstream.client.api.DataStream;
 import top.beliefyu.fstream.client.api.window.SlidingWindows;
+import top.beliefyu.fstream.util.SerializableUtil;
 
 import java.util.stream.Collectors;
 
@@ -48,6 +49,14 @@ class ApiTest {
                 () -> assertEquals(2, DataStream.getTreeHead().size()),
                 () -> assertEquals(9, DataStream.getTreeNode().size())
         );
+    }
+
+    @Test
+    void serializableTest(){
+        DataStream dataStream1 = buildDataStream();
+        byte[] bytes = SerializableUtil.toBytes(dataStream1);
+        DataStream dataStream2 = SerializableUtil.toObject(bytes);
+        System.out.println(dataStream2.getName());
     }
 
 }

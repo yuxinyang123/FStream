@@ -10,6 +10,6 @@ import java.util.Collection;
  * @date 2020-02-13 16:01
  */
 @FunctionalInterface
-public interface FlatMapFunction<IN, OUT> {
+public interface FlatMapFunction<IN, OUT> extends UserDefineFunction {
     public void transfer(IN msg, Collection<OUT> collects);
 }

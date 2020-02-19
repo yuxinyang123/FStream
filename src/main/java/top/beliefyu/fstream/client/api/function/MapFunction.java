@@ -8,6 +8,6 @@ package top.beliefyu.fstream.client.api.function;
  * @date 2020-02-13 00:46
  */
 @FunctionalInterface
-public interface MapFunction<IN, OUT> extends UserFunction {
+public interface MapFunction<IN, OUT> extends UserDefineFunction {
     public OUT transfer(IN msg);
 }
