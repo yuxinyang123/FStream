@@ -35,7 +35,7 @@ public class ZkClient {
         curator.start();
     }
 
-    public void creatEphemeralNode(String path, byte[] data) throws Exception {
+    public void creatNode(String path, byte[] data) throws Exception {
         String pathPrefix = path + "-";
         //无限重连
         curator.getConnectionStateListenable().addListener((CuratorFramework curatorFramework, ConnectionState connectionState) -> {

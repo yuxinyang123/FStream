@@ -15,6 +15,20 @@ service RpcServer {
     rpc DoHeartBeatTest (HeartBeatRequest) returns (HeartBeatResponse) {
     }
 
+    rpc submitDataStream (DataStreamRequest) returns (DataStreamResponse) {
+    }
+
+}
+
+
+message DataStreamRequest {
+    uint64 timestamp = 1;
+    bytes dataStreamBytes = 2;
+}
+
+message DataStreamResponse {
+    uint64 timestamp = 1;
+    string msg = 2;
 }
 
 message MessageRequest {

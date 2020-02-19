@@ -1,7 +1,6 @@
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import top.beliefyu.fstream.common.grpc.GrpcClient;
-import top.beliefyu.fstream.common.grpc.GrpcServer;
+import top.beliefyu.fstream.client.api.DataStream;
+import top.beliefyu.fstream.common.grpc.*;
 
 import java.io.IOException;
 
@@ -13,17 +12,30 @@ import java.io.IOException;
  * @date 2020-02-17 03:03
  */
 public class GrpcTest {
-    @Order(1)
+
     @Test
-    void startServer() throws IOException {
-        GrpcServer grpcServer = new GrpcServer(6666);
+    void startServerTest() throws IOException {
+        GrpcServer grpcServer = new GrpcServer(6666, new NodeGrpcService());
         grpcServer.start();
+        startClient();
     }
 
-    @Order(2)
-    @Test
-    void startClient() {
-        GrpcClient client = new GrpcClient("localhost", 6666);
+
+    private void startClient() {
+        NodeGrpcClient client = new NodeGrpcClient("localhost", 6666);
         System.out.println(client.doHeartBeatTest().getMsg());
+    }
+
+    @Test
+    private void startServerServiceTest() throws IOException {
+        GrpcServer grpcServer = new GrpcServer(6667, new ServerGrpcService());
+        grpcServer.start();
+        testDataStreamRpc();
+    }
+
+    void testDataStreamRpc() {
+        DataStream dataStream = ApiTest.buildDataStream();
+        ServerGrpcClient client = new ServerGrpcClient("localhost", 6667);
+//        client.submitDataStreamBytes(DataStreamRequest.newBuilder().setTimestamp(System.nanoTime()))
     }
 }

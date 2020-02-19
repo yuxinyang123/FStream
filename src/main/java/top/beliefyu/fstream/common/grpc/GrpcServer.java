@@ -1,5 +1,6 @@
 package top.beliefyu.fstream.common.grpc;
 
+import io.grpc.BindableService;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import org.slf4j.Logger;
@@ -21,9 +22,9 @@ public class GrpcServer {
     private final int port;
     private final Server server;
 
-    public GrpcServer(int port) throws IOException {
+    public GrpcServer(int port, BindableService provideService) throws IOException {
         this.port = port;
-        server = ServerBuilder.forPort(port).addService(new GrpcService())
+        server = ServerBuilder.forPort(port).addService(provideService)
                 .build();
     }
 
@@ -71,8 +72,8 @@ public class GrpcServer {
      * Main method.  This comment makes the linter happy.
      */
     public static void main(String[] args) throws Exception {
-        GrpcServer server = new GrpcServer(8980);
-        server.start();
-        server.blockUntilShutdown();
+//        GrpcServer server = new GrpcServer(8980, new NodeGrpcService());
+//        server.start();
+//        server.blockUntilShutdown();
     }
 }
