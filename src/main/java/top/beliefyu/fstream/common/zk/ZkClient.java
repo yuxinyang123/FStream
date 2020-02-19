@@ -2,11 +2,18 @@ package top.beliefyu.fstream.common.zk;
 
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
+import org.apache.curator.framework.recipes.cache.PathChildrenCache;
+import org.apache.curator.framework.recipes.cache.PathChildrenCacheEvent;
 import org.apache.curator.framework.state.ConnectionState;
 import org.apache.curator.retry.RetryNTimes;
 import org.apache.zookeeper.CreateMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.annotation.Nullable;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 /**
  * ZkClient
@@ -21,6 +28,8 @@ public class ZkClient {
 
     private CuratorFramework curator;
 
+    private PathChildrenCache pathChildrenCache;
+
     private String connectString;
 
     public ZkClient(String host, int port) {
@@ -31,19 +40,19 @@ public class ZkClient {
 
     private void init() {
         curator = CuratorFrameworkFactory.newClient(connectString,
-                10000, 5000, new RetryNTimes(5, 1000));
+                10000, 5000, new RetryNTimes(5, 1000))
+                .usingNamespace("fstream");
         curator.start();
     }
 
-    public void creatNode(String path, byte[] data) throws Exception {
-        String pathPrefix = path + "-";
+    public void creatNode(String path, byte[] data) {
         //无限重连
         curator.getConnectionStateListenable().addListener((CuratorFramework curatorFramework, ConnectionState connectionState) -> {
             while (connectionState == ConnectionState.LOST) {
                 try {
                     if (curatorFramework.getZookeeperClient().blockUntilConnectedOrTimedOut()) {
-                        curatorFramework.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL_SEQUENTIAL)
-                                .forPath(pathPrefix, data);
+                        curatorFramework.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL)
+                                .forPath(path, data);
                         break;
                     }
                 } catch (Exception e) {
@@ -52,12 +61,59 @@ public class ZkClient {
             }
         });
 
-        curator.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL_SEQUENTIAL)
-                .forPath(pathPrefix, data);
+        try {
+            curator.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL_SEQUENTIAL)
+                    .forPath(path, data);
+        } catch (Exception e) {
+            LOGGER.error("creatNode fail!", e);
+        }
+    }
+
+    @Nullable
+    public List<String> getChildrenList(String path) {
+        try {
+            return curator.getChildren().forPath(path);
+        } catch (Exception e) {
+            LOGGER.error("getChildrenList fail!", e);
+            return null;
+        }
+    }
+
+    public void refreshNodesInBackgroud(String path, Map<String, Object> map) {
+        pathChildrenCache = new PathChildrenCache(curator, path, true);
+        pathChildrenCache.getListenable().addListener((CuratorFramework client, PathChildrenCacheEvent e) -> {
+            switch (e.getType()) {
+                case CHILD_ADDED:
+                    LOGGER.debug("CHILD_ADDED");
+                    map.put(e.toString(), e.getData());
+                    break;
+                case CHILD_UPDATED:
+                    LOGGER.debug("CHILD_UPDATED");
+                    map.put(e.toString(), e.getData());
+                    break;
+                case CHILD_REMOVED:
+                    LOGGER.debug("CHILD_REMOVED");
+                    map.put(e.toString(), null);
+                    break;
+                default:
+                    break;
+            }
+        });
     }
 
     public void close() {
-        curator.close();
+        if (pathChildrenCache != null) {
+            try {
+                pathChildrenCache.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (curator != null) {
+            curator.close();
+        }
+
     }
 
 }
