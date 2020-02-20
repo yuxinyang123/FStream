@@ -22,7 +22,7 @@ public class GrpcServer {
     private final int port;
     private final Server server;
 
-    public GrpcServer(int port, BindableService provideService) throws IOException {
+    public GrpcServer(int port, BindableService provideService) {
         this.port = port;
         server = ServerBuilder.forPort(port).addService(provideService)
                 .build();
@@ -32,13 +32,16 @@ public class GrpcServer {
     /**
      * Start serving requests.
      */
-    public void start() throws IOException {
-        server.start();
+    public void start() {
+        try {
+            server.start();
+        } catch (IOException e) {
+            logger.error("start fail", e);
+        }
         logger.info("Server started, listening on " + port);
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {
-                // Use stderr here since the logger may have been reset by its JVM shutdown hook.
                 logger.info("*** shutting down gRPC server since JVM is shutting down");
                 try {
                     GrpcServer.this.stop();
@@ -62,7 +65,7 @@ public class GrpcServer {
     /**
      * Await termination on the main thread since the grpc library uses daemon threads.
      */
-    private void blockUntilShutdown() throws InterruptedException {
+    public void blockUntilShutdown() throws InterruptedException {
         if (server != null) {
             server.awaitTermination();
         }

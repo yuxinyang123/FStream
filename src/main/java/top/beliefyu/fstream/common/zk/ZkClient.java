@@ -39,10 +39,27 @@ public class ZkClient {
 
 
     private void init() {
-        curator = CuratorFrameworkFactory.newClient(connectString,
-                10000, 5000, new RetryNTimes(5, 1000))
-                .usingNamespace("fstream");
+        curator = CuratorFrameworkFactory.builder()
+                .sessionTimeoutMs(10000)
+                .connectionTimeoutMs(5000)
+                .retryPolicy(new RetryNTimes(5, 1000))
+                .connectString(connectString)
+                .namespace("fstream")
+                .build();
+    }
+
+    public void start() {
         curator.start();
+        LOGGER.info("zkClient started, listening on " + connectString);
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            LOGGER.info("*** shutting down zkClient server since JVM is shutting down");
+            try {
+                close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            LOGGER.info("*** zkClient shut down");
+        }));
     }
 
     public void creatNode(String path, byte[] data) {
@@ -101,13 +118,9 @@ public class ZkClient {
         });
     }
 
-    public void close() {
+    public void close() throws IOException {
         if (pathChildrenCache != null) {
-            try {
-                pathChildrenCache.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            pathChildrenCache.close();
         }
 
         if (curator != null) {
