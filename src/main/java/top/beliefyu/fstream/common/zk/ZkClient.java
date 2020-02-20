@@ -96,17 +96,17 @@ public class ZkClient {
         }
     }
 
-    public void refreshNodesInBackgroud(String path, Map<String, Object> map) {
+    public void refreshNodesInBackground(String path, Map<String, Integer> map) {
         pathChildrenCache = new PathChildrenCache(curator, path, true);
         pathChildrenCache.getListenable().addListener((CuratorFramework client, PathChildrenCacheEvent e) -> {
             switch (e.getType()) {
                 case CHILD_ADDED:
                     LOGGER.debug("CHILD_ADDED");
-                    map.put(e.toString(), e.getData());
+                    map.put(e.toString(), 1);
                     break;
                 case CHILD_UPDATED:
                     LOGGER.debug("CHILD_UPDATED");
-                    map.put(e.toString(), e.getData());
+                    map.put(e.toString(), 1);
                     break;
                 case CHILD_REMOVED:
                     LOGGER.debug("CHILD_REMOVED");
@@ -116,6 +116,11 @@ public class ZkClient {
                     break;
             }
         });
+        try {
+            pathChildrenCache.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void close() throws IOException {

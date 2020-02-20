@@ -17,22 +17,31 @@ public class Server {
 
     private static GrpcServer grpcServer;
 
+    private static ServerService serverService = new ServerService();
+
     public static void main(String[] args) {
+        init();
+        listeningRegisteredServices();
+        grpcServerStartAndBlockUntilShutdown();
+    }
+
+    private static void init() {
         zkClient = new ZkClient("127.0.0.1", 2181);
         grpcServer = new GrpcServer(6666, new ServerGrpcService());
-        start();
+        zkClient.start();
     }
 
 
-    private static void start() {
-        zkClient.start();
-        grpcServer.start();
+    private static void listeningRegisteredServices() {
+        serverService.listenAllRegisteredServicesFromZk(zkClient, "node");
+    }
+
+    private static void grpcServerStartAndBlockUntilShutdown() {
         try {
+            grpcServer.start();
             grpcServer.blockUntilShutdown();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
-
-
 }
