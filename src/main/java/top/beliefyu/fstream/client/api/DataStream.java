@@ -23,12 +23,12 @@ public class DataStream<T> implements Serializable {
     /**
      * DAG的头引用集合
      */
-    private static final Collection<? super DataStream> TREE_HEAD = new HashSet<>();
+    private Collection<DataStream> treeHead = new HashSet<>();
 
     /**
      * DAG所有流引用
      */
-    private static final Collection<? super DataStream> TREE_NODE = new HashSet<>();
+    private Collection<DataStream> treeNode = new HashSet<>();
 
     /**
      * DAG算子节点
@@ -59,8 +59,8 @@ public class DataStream<T> implements Serializable {
     private <OUT> void setSource(SourceFunction<OUT> function) {
         parentOperator = null;
         operator = new SourceOperator(function);
-        TREE_HEAD.add(this);
-        TREE_NODE.add(this);
+        treeHead.add(this);
+        treeNode.add(this);
     }
 
     public <OUT> DataStream<OUT> map(MapFunction<T, OUT> function) {
@@ -84,6 +84,7 @@ public class DataStream<T> implements Serializable {
     @SafeVarargs
     public final DataStream<T> union(DataStream<? super T>... dataStreams) {
         DataStream<T> outDataStream = buildNextDataStream(new UnionOperator(asList(dataStreams)));
+        syncAllNode(dataStreams);
         outDataStream.isMultipleInput = true;
         return outDataStream;
     }
@@ -97,14 +98,27 @@ public class DataStream<T> implements Serializable {
         sinkStream.childOperator = null;
     }
 
-    private <OUT> DataStream<OUT> buildNextDataStream(DataOperator operator) {
+    private <OUT, OPT extends DataOperator> DataStream<OUT> buildNextDataStream(OPT operator) {
         DataStream<OUT> nextDataStream = new DataStream<>();
         nextDataStream.parentOperator.add(this.operator);
         nextDataStream.operator = operator;
 
         childOperator.add(operator);
-        TREE_NODE.add(nextDataStream);
+        treeNode.add(nextDataStream);
+
+        nextDataStream.treeHead = this.treeHead;
+        nextDataStream.treeNode = this.treeNode;
         return nextDataStream;
+    }
+
+    @SafeVarargs
+    private final void syncAllNode(DataStream<? super T>... dataStreams) {
+        for (DataStream<? super T> dataStream : dataStreams) {
+            treeHead.addAll(dataStream.treeHead);
+            treeNode.addAll(dataStream.treeNode);
+            dataStream.treeHead = treeHead;
+            dataStream.treeNode = treeNode;
+        }
     }
 
     public DataStream<T> name(String name) {
@@ -116,12 +130,12 @@ public class DataStream<T> implements Serializable {
 
     }
 
-    public static Collection<? super DataStream> getTreeHead() {
-        return TREE_HEAD;
+    public Collection<DataStream> getTreeHead() {
+        return treeHead;
     }
 
-    public static Collection<? super DataStream> getTreeNode() {
-        return TREE_NODE;
+    public Collection<DataStream> getTreeNode() {
+        return treeNode;
     }
 
     public String getUid() {
@@ -132,11 +146,25 @@ public class DataStream<T> implements Serializable {
         return name;
     }
 
-    public void clear() {
-        TREE_HEAD.clear();
-        TREE_NODE.clear();
+    public Collection<? super DataOperator> getParentOperator() {
+        return parentOperator;
     }
 
+    public DataOperator getOperator() {
+        return operator;
+    }
+
+    public Collection<? super DataOperator> getChildOperator() {
+        return childOperator;
+    }
+
+    public boolean isMultipleOutput() {
+        return isMultipleOutput;
+    }
+
+    public boolean isMultipleInput() {
+        return isMultipleInput;
+    }
 
     @Override
     public String toString() {

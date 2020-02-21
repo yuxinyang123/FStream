@@ -102,11 +102,11 @@ public class ZkClient {
             switch (e.getType()) {
                 case CHILD_ADDED:
                     LOGGER.debug("CHILD_ADDED");
-                    map.put(e.toString(), 1);
+                    map.put(e.toString(), 0);
                     break;
                 case CHILD_UPDATED:
                     LOGGER.debug("CHILD_UPDATED");
-                    map.put(e.toString(), 1);
+                    map.put(e.toString(), 0);
                     break;
                 case CHILD_REMOVED:
                     LOGGER.debug("CHILD_REMOVED");
