@@ -31,15 +31,23 @@ public class NodeGrpcService extends RpcServerGrpc.RpcServerImplBase {
 
     @Override
     public void doHeartBeatTest(HeartBeatRequest request, StreamObserver<HeartBeatResponse> responseObserver) {
-        responseObserver.onNext(buildHeartBeatResponse());
+        responseObserver.onNext(HeartBeatResponse.newBuilder()
+                .setTimestamp(System.currentTimeMillis())
+                .setMsg("pong")
+                .build());
         responseObserver.onCompleted();
         logger.debug("doHeartBeatTest success");
     }
 
-    private HeartBeatResponse buildHeartBeatResponse() {
-        return HeartBeatResponse.newBuilder()
-                .setTimestamp(System.currentTimeMillis())
-                .setMsg("pong")
-                .build();
+    @Override
+    public void submitPhysicsExecution(PhysicsExecutionRequest request, StreamObserver<PhysicsExecutionResponse> responseObserver) {
+        responseObserver.onNext(PhysicsExecutionResponse.newBuilder().setMsg("success").build());
+        dealWithPhysicsExecution();
+        responseObserver.onCompleted();
+        logger.debug("receive a physicsExecution");
+    }
+
+    private void dealWithPhysicsExecution() {
+        //todo 处理PhysicsExecutionRequest
     }
 }

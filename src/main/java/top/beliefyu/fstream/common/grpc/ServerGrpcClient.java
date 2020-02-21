@@ -20,7 +20,7 @@ public class ServerGrpcClient extends GrpcClient {
         super(host, port);
     }
 
-    public DataStreamResponse submitDataStreamBytes(DataStreamRequest request){
-        return blockingStub.submitDataStreamBytes(request);
+    public DataStreamResponse submitDataStream(DataStreamRequest request) {
+        return blockingStub.submitDataStream(request);
     }
 }

@@ -21,7 +21,7 @@ public class ServerGrpcService extends RpcServerGrpc.RpcServerImplBase {
     private static final Logger LOGGER = LoggerFactory.getLogger(ServerGrpcService.class);
 
     @Override
-    public void submitDataStreamBytes(DataStreamRequest request, StreamObserver<DataStreamResponse> responseObserver) {
+    public void submitDataStream(DataStreamRequest request, StreamObserver<DataStreamResponse> responseObserver) {
         pushDataStream(request);
         responseObserver.onNext(buildDataStreamResponse("success"));
         responseObserver.onCompleted();

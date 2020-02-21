@@ -1,12 +1,13 @@
 package top.beliefyu.fstream.common.grpc;
 
 import io.grpc.Channel;
-import top.beliefyu.fstream.rpc.HeartBeatRequest;
-import top.beliefyu.fstream.rpc.HeartBeatResponse;
-import top.beliefyu.fstream.rpc.MessageRequest;
-import top.beliefyu.fstream.rpc.MessageResponse;
+import top.beliefyu.fstream.rpc.*;
+import top.beliefyu.fstream.server.ServerService.PhysicsExecution;
 
 import java.util.Iterator;
+
+import static com.google.protobuf.ByteString.copyFrom;
+import static top.beliefyu.fstream.util.SerializableUtil.toBytes;
 
 /**
  * NodeGrpcClient
@@ -30,13 +31,19 @@ public class NodeGrpcClient extends GrpcClient {
     }
 
     public HeartBeatResponse doHeartBeatTest() {
-        return blockingStub.doHeartBeatTest(buildHeartBeatRequest());
-    }
-
-    private HeartBeatRequest buildHeartBeatRequest() {
-        return HeartBeatRequest.newBuilder()
+        return blockingStub.doHeartBeatTest(HeartBeatRequest.newBuilder()
                 .setTimestamp(System.currentTimeMillis())
                 .setMsg("ping")
-                .build();
+                .build());
+    }
+
+
+    public PhysicsExecutionResponse submitPhysicsExecution(PhysicsExecution physicsExecution) {
+        return blockingStub.submitPhysicsExecution(
+                PhysicsExecutionRequest.newBuilder()
+                        .setTimestamp(System.nanoTime())
+                        .setPhysicsExecution(copyFrom(toBytes(physicsExecution)))
+                        .build()
+        );
     }
 }

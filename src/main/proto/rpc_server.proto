@@ -18,7 +18,7 @@ service RpcServer {
     rpc submitDataStream (DataStreamRequest) returns (DataStreamResponse) {
     }
 
-    rpc getPhysicsExecution (PhysicsExecutionRequest) returns (PhysicsExecutionResponse) {
+    rpc submitPhysicsExecution (PhysicsExecutionRequest) returns (PhysicsExecutionResponse) {
     }
 
 }
