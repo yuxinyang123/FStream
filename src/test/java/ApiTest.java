@@ -42,21 +42,23 @@ class ApiTest {
         DataStream dataStream = buildDataStream();
 
 
-        System.out.println(DataStream.getTreeHead());
-        System.out.println(DataStream.getTreeNode());
+        System.out.println(dataStream.getTreeHead());
+        System.out.println(dataStream.getTreeNode());
 
         assertAll("testNumbers",
-                () -> assertEquals(2, DataStream.getTreeHead().size()),
-                () -> assertEquals(9, DataStream.getTreeNode().size())
+                () -> assertEquals(2, dataStream.getTreeHead().size()),
+                () -> assertEquals(9, dataStream.getTreeNode().size())
         );
     }
 
     @Test
-    void serializableTest(){
+    void serializableTest() {
         DataStream dataStream1 = buildDataStream();
         byte[] bytes = SerializableUtil.toBytes(dataStream1);
         DataStream dataStream2 = SerializableUtil.toObject(bytes);
-        System.out.println(dataStream2.getName());
+
+        assertEquals(dataStream1.getTreeHead().size(), dataStream2.getTreeHead().size());
+        assertEquals(dataStream1.getTreeNode().size(), dataStream2.getTreeNode().size());
     }
 
 }
