@@ -6,6 +6,7 @@ import top.beliefyu.fstream.client.api.DataStream;
 import top.beliefyu.fstream.client.api.operator.DataOperator;
 import top.beliefyu.fstream.common.zk.ZkClient;
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -35,7 +36,7 @@ public class ServerService {
         client.refreshNodesInBackground(path, hostWeightMap);
     }
 
-    @SuppressWarnings("unchecked")
+    //    @SuppressWarnings("unchecked")
     public List<PhysicsExecution> generatePhysicsExecution(DataStream dataStream) {
         Collection<DataStream> treeHead = dataStream.getTreeHead();
         Collection<DataStream> treeNode = dataStream.getTreeNode();
@@ -51,6 +52,7 @@ public class ServerService {
                 operatorHostMap.put(operator, host);
             }
         }
+        logger.debug("step1:getOperatorHostMap:[{}]", operatorHostMap);
 
         //todo transfer2PhysicsExecutions
         List<PhysicsExecution> physicsExecutions = new ArrayList<>();
@@ -66,6 +68,7 @@ public class ServerService {
                     .setUid(stream.getUid());
             physicsExecutions.add(physicsExecution);
         }
+        logger.info("transfer 2 PhysicsExecutions:[{}]", physicsExecutions);
 
         return physicsExecutions;
 
@@ -84,10 +87,11 @@ public class ServerService {
         return result;
     }
 
-    public void distributePhysicsExecution() {
+    public void distributePhysicsExecution(List<PhysicsExecution> physicsExecutions) {
+
     }
 
-    public class PhysicsExecution {
+    public class PhysicsExecution implements Serializable {
         private List<String> upstreamHost;
         private String host;
         private List<String> downstreamHost;
@@ -154,6 +158,18 @@ public class ServerService {
         public PhysicsExecution setUid(String uid) {
             this.uid = uid;
             return this;
+        }
+
+        @Override
+        public String toString() {
+            return "PhysicsExecution{" +
+                    "upstreamHost=" + upstreamHost +
+                    ", host='" + host + '\'' +
+                    ", downstreamHost=" + downstreamHost +
+                    ", operator=" + operator +
+                    ", name='" + name + '\'' +
+                    ", uid='" + uid + '\'' +
+                    '}';
         }
     }
 }

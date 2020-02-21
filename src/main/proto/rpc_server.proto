@@ -18,6 +18,18 @@ service RpcServer {
     rpc submitDataStream (DataStreamRequest) returns (DataStreamResponse) {
     }
 
+    rpc getPhysicsExecution (PhysicsExecutionRequest) returns (PhysicsExecutionResponse) {
+    }
+
+}
+message PhysicsExecutionRequest {
+    uint64 timestamp = 1;
+    string msg = 2;
+    bytes physicsExecution = 3;
+}
+
+message PhysicsExecutionResponse {
+    string msg = 1;
 }
 
 
