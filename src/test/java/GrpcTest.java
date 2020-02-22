@@ -1,10 +1,7 @@
-import com.google.protobuf.ByteString;
 import org.junit.jupiter.api.Test;
 import top.beliefyu.fstream.client.api.DataStream;
 import top.beliefyu.fstream.common.grpc.*;
-import top.beliefyu.fstream.rpc.DataStreamRequest;
 import top.beliefyu.fstream.rpc.DataStreamResponse;
-import top.beliefyu.fstream.util.SerializableUtil;
 
 import java.io.IOException;
 
@@ -41,10 +38,6 @@ public class GrpcTest {
         DataStream dataStream = ApiTest.buildDataStream();
         System.out.println(dataStream.getName());
         ServerGrpcClient client = new ServerGrpcClient("localhost", 6667);
-        DataStreamResponse dataStreamResponse = client.submitDataStreamBytes(DataStreamRequest.newBuilder()
-                .setTimestamp(System.nanoTime())
-                .setDataStreamBytes(ByteString.copyFrom(SerializableUtil.toBytes(dataStream)))
-                .build()
-        );
+        DataStreamResponse dataStreamResponse = client.submitDataStream(dataStream);
     }
 }
