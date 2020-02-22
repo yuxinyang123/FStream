@@ -1,6 +1,7 @@
 import org.junit.jupiter.api.Test;
 import top.beliefyu.fstream.client.api.DataStream;
 import top.beliefyu.fstream.common.grpc.*;
+import top.beliefyu.fstream.node.NodeGrpcService;
 import top.beliefyu.fstream.rpc.DataStreamResponse;
 
 import java.io.IOException;
