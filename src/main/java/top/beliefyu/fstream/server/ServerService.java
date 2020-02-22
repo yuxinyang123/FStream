@@ -39,7 +39,7 @@ public class ServerService {
         client.refreshNodesInBackground(path, hostWeightMap);
     }
 
-    //    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")
     public List<PhysicsExecution> generatePhysicsExecution(DataStream dataStream) {
         Collection<DataStream> treeHead = dataStream.getTreeHead();
         Collection<DataStream> treeNode = dataStream.getTreeNode();
@@ -60,8 +60,10 @@ public class ServerService {
         //todo transfer2PhysicsExecutions
         List<PhysicsExecution> physicsExecutions = new ArrayList<>();
         for (DataStream stream : treeNode) {
-            List<String> upstreamHosts = (List<String>) stream.getParentOperator().stream().map(operatorHostMap::get).collect(Collectors.toList());
-            List<String> downstreamHosts = (List<String>) stream.getChildOperator().stream().map(operatorHostMap::get).collect(Collectors.toList());
+            List<String> upstreamHosts = stream.getParentOperator() == null ? null :
+                    (List<String>) stream.getParentOperator().stream().map(operatorHostMap::get).collect(Collectors.toList());
+            List<String> downstreamHosts = stream.getChildOperator() == null ? null :
+                    (List<String>) stream.getChildOperator().stream().map(operatorHostMap::get).collect(Collectors.toList());
             PhysicsExecution physicsExecution = new PhysicsExecution()
                     .setUpstreamHost(upstreamHosts)
                     .setDownstreamHost(downstreamHosts)
