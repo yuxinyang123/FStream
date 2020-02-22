@@ -8,4 +8,7 @@ package top.beliefyu.fstream.node;
  * @date 2020-02-23 03:02
  */
 public class Node {
+    public static void main(String[] args) {
+
+    }
 }

@@ -1,11 +1,11 @@
 import org.junit.jupiter.api.Test;
-import top.beliefyu.fstream.client.ServerGrpcClient;
-import top.beliefyu.fstream.client.api.DataStream;
+import top.beliefyu.fstream.client.grpc.ServerGrpcClient;
+import top.beliefyu.fstream.client.DataStream;
 import top.beliefyu.fstream.common.grpc.*;
-import top.beliefyu.fstream.node.NodeGrpcService;
-import top.beliefyu.fstream.node.ServerGrpcService;
+import top.beliefyu.fstream.node.grpc.NodeGrpcService;
+import top.beliefyu.fstream.server.grpc.ServerGrpcService;
 import top.beliefyu.fstream.rpc.DataStreamResponse;
-import top.beliefyu.fstream.server.NodeGrpcClient;
+import top.beliefyu.fstream.server.grpc.NodeGrpcClient;
 
 import java.io.IOException;
 

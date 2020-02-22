@@ -1,7 +1,7 @@
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import top.beliefyu.fstream.client.api.DataStream;
+import top.beliefyu.fstream.client.DataStream;
 import top.beliefyu.fstream.client.api.window.SlidingWindows;
 import top.beliefyu.fstream.util.SerializableUtil;
 

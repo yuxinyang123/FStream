@@ -1,6 +1,6 @@
 package top.beliefyu.fstream.client.api.operator;
 
-import top.beliefyu.fstream.client.api.DataStream;
+import top.beliefyu.fstream.client.DataStream;
 
 import java.util.List;
 

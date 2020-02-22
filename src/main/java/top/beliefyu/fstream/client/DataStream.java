@@ -1,9 +1,9 @@
-package top.beliefyu.fstream.client.api;
+package top.beliefyu.fstream.client;
 
 import top.beliefyu.fstream.client.api.function.*;
 import top.beliefyu.fstream.client.api.operator.*;
 import top.beliefyu.fstream.client.api.window.WindowAssigner;
-import top.beliefyu.fstream.client.ServerGrpcClient;
+import top.beliefyu.fstream.client.grpc.ServerGrpcClient;
 
 import java.io.Serializable;
 import java.util.Collection;

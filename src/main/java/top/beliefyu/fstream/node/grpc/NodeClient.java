@@ -1,4 +1,4 @@
-package top.beliefyu.fstream.node;
+package top.beliefyu.fstream.node.grpc;
 
 import io.grpc.Channel;
 import top.beliefyu.fstream.common.grpc.GrpcClient;
