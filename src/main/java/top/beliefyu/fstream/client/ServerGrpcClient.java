@@ -1,7 +1,8 @@
-package top.beliefyu.fstream.common.grpc;
+package top.beliefyu.fstream.client;
 
 import io.grpc.Channel;
 import top.beliefyu.fstream.client.api.DataStream;
+import top.beliefyu.fstream.common.grpc.GrpcClient;
 import top.beliefyu.fstream.rpc.DataStreamRequest;
 import top.beliefyu.fstream.rpc.DataStreamResponse;
 

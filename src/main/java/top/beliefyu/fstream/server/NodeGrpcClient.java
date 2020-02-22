@@ -1,6 +1,7 @@
-package top.beliefyu.fstream.common.grpc;
+package top.beliefyu.fstream.server;
 
 import io.grpc.Channel;
+import top.beliefyu.fstream.common.grpc.GrpcClient;
 import top.beliefyu.fstream.rpc.*;
 import top.beliefyu.fstream.server.ServerService.PhysicsExecution;
 
@@ -30,9 +31,6 @@ public class NodeGrpcClient extends GrpcClient {
         super(host);
     }
 
-    public Iterator<MessageResponse> pullMessage() {
-        return blockingStub.pullMessage(MessageRequest.newBuilder().build());
-    }
 
     public HeartBeatResponse doHeartBeatTest() {
         return blockingStub.doHeartBeatTest(HeartBeatRequest.newBuilder()

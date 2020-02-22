@@ -3,7 +3,7 @@ package top.beliefyu.fstream.client.api;
 import top.beliefyu.fstream.client.api.function.*;
 import top.beliefyu.fstream.client.api.operator.*;
 import top.beliefyu.fstream.client.api.window.WindowAssigner;
-import top.beliefyu.fstream.common.grpc.ServerGrpcClient;
+import top.beliefyu.fstream.client.ServerGrpcClient;
 
 import java.io.Serializable;
 import java.util.Collection;

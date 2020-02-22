@@ -1,7 +1,7 @@
 package top.beliefyu.fstream.server;
 
 import top.beliefyu.fstream.common.grpc.GrpcServer;
-import top.beliefyu.fstream.common.grpc.ServerGrpcService;
+import top.beliefyu.fstream.node.ServerGrpcService;
 import top.beliefyu.fstream.common.zk.ZkClient;
 
 /**

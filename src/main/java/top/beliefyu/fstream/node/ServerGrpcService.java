@@ -1,4 +1,4 @@
-package top.beliefyu.fstream.common.grpc;
+package top.beliefyu.fstream.node;
 
 import io.grpc.stub.StreamObserver;
 import org.slf4j.Logger;
