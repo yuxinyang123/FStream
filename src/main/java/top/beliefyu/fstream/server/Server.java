@@ -44,4 +44,8 @@ public class Server {
             e.printStackTrace();
         }
     }
+
+    public static ServerService getServerService() {
+        return serverService;
+    }
 }

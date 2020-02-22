@@ -7,7 +7,13 @@ import top.beliefyu.fstream.client.api.DataStream;
 import top.beliefyu.fstream.rpc.DataStreamRequest;
 import top.beliefyu.fstream.rpc.DataStreamResponse;
 import top.beliefyu.fstream.rpc.RpcServerGrpc;
+import top.beliefyu.fstream.server.Server;
+import top.beliefyu.fstream.server.ServerService;
 import top.beliefyu.fstream.util.SerializableUtil;
+
+import java.util.List;
+
+import static top.beliefyu.fstream.util.SerializableUtil.toObject;
 
 /**
  * ClientGrpcService
@@ -22,9 +28,9 @@ public class ServerGrpcService extends RpcServerGrpc.RpcServerImplBase {
 
     @Override
     public void submitDataStream(DataStreamRequest request, StreamObserver<DataStreamResponse> responseObserver) {
-        pushDataStream(request);
         responseObserver.onNext(buildDataStreamResponse("success"));
         responseObserver.onCompleted();
+        pushDataStream(request);
         LOGGER.debug("submit success,[{}]",
                 SerializableUtil.<DataStream>toObject(request.getDataStreamBytes().toByteArray()).getName());
     }
@@ -34,6 +40,8 @@ public class ServerGrpcService extends RpcServerGrpc.RpcServerImplBase {
     }
 
     private void pushDataStream(DataStreamRequest request) {
-        //todo 传递或处理DataStream对象
+        ServerService serverService = Server.getServerService();
+        List<ServerService.PhysicsExecution> physicsExecutions = serverService.generatePhysicsExecution(toObject(request.getDataStreamBytes().toByteArray()));
+        serverService.distributePhysicsExecution(physicsExecutions);
     }
 }

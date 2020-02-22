@@ -4,7 +4,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.beliefyu.fstream.client.api.DataStream;
 import top.beliefyu.fstream.client.api.operator.DataOperator;
+import top.beliefyu.fstream.common.grpc.NodeGrpcClient;
 import top.beliefyu.fstream.common.zk.ZkClient;
+import top.beliefyu.fstream.rpc.HeartBeatResponse;
+import top.beliefyu.fstream.rpc.PhysicsExecutionResponse;
 
 import java.io.Serializable;
 import java.util.*;
@@ -52,7 +55,7 @@ public class ServerService {
                 operatorHostMap.put(operator, host);
             }
         }
-        logger.debug("step1:getOperatorHostMap:[{}]", operatorHostMap);
+        logger.debug("getOperatorHostMap:[{}]", operatorHostMap);
 
         //todo transfer2PhysicsExecutions
         List<PhysicsExecution> physicsExecutions = new ArrayList<>();
@@ -88,7 +91,19 @@ public class ServerService {
     }
 
     public void distributePhysicsExecution(List<PhysicsExecution> physicsExecutions) {
+        physicsExecutions.forEach(i -> {
+            NodeGrpcClient client = new NodeGrpcClient(i.getHost());
+            HeartBeatResponse heartBeatResponse = client.doHeartBeatTest();
+            logger.debug("[{}],heartBeat:[{}]", i.getName(), heartBeatResponse.getMsg());
+            PhysicsExecutionResponse physicsExecutionResponse = client.submitPhysicsExecution(i);
+            logger.info("[{}],submitPhysicsExecution:[{}]", i.getName(), physicsExecutionResponse.getMsg());
+        });
+        logger.info("all PhysicsExecution submitted!");
+    }
 
+    public class Task implements Serializable {
+        private List<PhysicsExecution> physicsExecutions;
+        private String id = UUID.randomUUID().toString();
     }
 
     public class PhysicsExecution implements Serializable {
