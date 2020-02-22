@@ -22,8 +22,12 @@ public class NodeGrpcClient extends GrpcClient {
         super(channel);
     }
 
+    public NodeGrpcClient(String host, int port) {
+        super(host, port);
+    }
+
     public NodeGrpcClient(String host) {
-        super(host.split(":")[0], Integer.parseInt(host.split(":")[1]));
+        super(host);
     }
 
     public Iterator<MessageResponse> pullMessage() {

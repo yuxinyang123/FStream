@@ -1,8 +1,12 @@
 package top.beliefyu.fstream.common.grpc;
 
 import io.grpc.Channel;
+import top.beliefyu.fstream.client.api.DataStream;
 import top.beliefyu.fstream.rpc.DataStreamRequest;
 import top.beliefyu.fstream.rpc.DataStreamResponse;
+
+import static com.google.protobuf.ByteString.copyFrom;
+import static top.beliefyu.fstream.util.SerializableUtil.toBytes;
 
 /**
  * ServerGrpcClient
@@ -20,7 +24,15 @@ public class ServerGrpcClient extends GrpcClient {
         super(host, port);
     }
 
-    public DataStreamResponse submitDataStream(DataStreamRequest request) {
-        return blockingStub.submitDataStream(request);
+    public ServerGrpcClient(String hostPort) {
+        super(hostPort);
+    }
+
+    public DataStreamResponse submitDataStream(DataStream dataStream) {
+        return blockingStub.submitDataStream(DataStreamRequest.newBuilder()
+                .setTimestamp(System.nanoTime())
+                .setDataStreamBytes(copyFrom(toBytes(dataStream)))
+                .build()
+        );
     }
 }

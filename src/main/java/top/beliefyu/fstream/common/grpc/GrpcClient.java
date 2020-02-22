@@ -27,5 +27,9 @@ public abstract class GrpcClient {
                 .build());
     }
 
+    public GrpcClient(String hostPort) {
+        this(hostPort.split(":")[0], Integer.parseInt(hostPort.split(":")[1]));
+    }
+
 
 }

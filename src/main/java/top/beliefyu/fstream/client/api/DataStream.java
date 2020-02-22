@@ -3,6 +3,7 @@ package top.beliefyu.fstream.client.api;
 import top.beliefyu.fstream.client.api.function.*;
 import top.beliefyu.fstream.client.api.operator.*;
 import top.beliefyu.fstream.client.api.window.WindowAssigner;
+import top.beliefyu.fstream.common.grpc.ServerGrpcClient;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -126,8 +127,9 @@ public class DataStream<T> implements Serializable {
         return this;
     }
 
-    public void submit() {
-
+    public void submit(String serverHost) {
+        ServerGrpcClient client = new ServerGrpcClient(serverHost);
+        client.submitDataStream(this);
     }
 
     public Collection<DataStream> getTreeHead() {
@@ -175,7 +177,6 @@ public class DataStream<T> implements Serializable {
             return String.format("%s-%s@-%s", name, uid.substring(0, 8), operator.getClass().getSimpleName().split("Operator")[0]);
         }
     }
-
 
 }
 
