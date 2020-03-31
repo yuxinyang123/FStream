@@ -24,12 +24,12 @@ public class DataStream<T> implements Serializable {
     /**
      * DAG的头引用集合
      */
-    private Collection<DataStream> treeHead = new HashSet<>();
+    private Collection<DataStream<?>> treeHead = new HashSet<>();
 
     /**
      * DAG所有流引用
      */
-    private Collection<DataStream> treeNode = new HashSet<>();
+    private Collection<DataStream<?>> treeNode = new HashSet<>();
 
     /**
      * DAG算子节点
@@ -83,7 +83,7 @@ public class DataStream<T> implements Serializable {
     }
 
     @SafeVarargs
-    public final DataStream<T> union(DataStream<? super T>... dataStreams) {
+    public final DataStream<T> union(DataStream<T>... dataStreams) {
         DataStream<T> outDataStream = buildNextDataStream(new UnionOperator(asList(dataStreams)));
         syncAllNode(dataStreams);
         outDataStream.isMultipleInput = true;
@@ -132,11 +132,11 @@ public class DataStream<T> implements Serializable {
         client.submitDataStream(this);
     }
 
-    public Collection<DataStream> getTreeHead() {
+    public Collection<DataStream<?>> getTreeHead() {
         return treeHead;
     }
 
-    public Collection<DataStream> getTreeNode() {
+    public Collection<DataStream<?>> getTreeNode() {
         return treeNode;
     }
 

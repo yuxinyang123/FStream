@@ -21,7 +21,7 @@ class ApiTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ApiTest.class);
 
-    public static DataStream buildDataStream() {
+    public static DataStream<?> buildDataStream() {
         DataStream<Integer> dataStream = new DataStream<>(() -> 110);
         DataStream<Long> map = dataStream.map(Integer::longValue);
         DataStream<Long> filter = map.filter(i -> i.compareTo(0L) > 0);

@@ -39,7 +39,7 @@ public class GrpcTest {
     }
 
     void testDataStreamRpc() {
-        DataStream dataStream = ApiTest.buildDataStream();
+        DataStream<?> dataStream = ApiTest.buildDataStream();
         System.out.println(dataStream.getName());
         ServerGrpcClient client = new ServerGrpcClient("localhost", 6667);
         DataStreamResponse dataStreamResponse = client.submitDataStream(dataStream);
