@@ -63,6 +63,12 @@ public class ZkClient {
     }
 
     public void creatNode(String path, byte[] data) {
+        try {
+            curator.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL_SEQUENTIAL)
+                    .forPath(path, data);
+        } catch (Exception e) {
+            LOGGER.error("creatNode fail!", e);
+        }
         //无限重连
         curator.getConnectionStateListenable().addListener((CuratorFramework curatorFramework, ConnectionState connectionState) -> {
             while (connectionState == ConnectionState.LOST) {
@@ -77,13 +83,6 @@ public class ZkClient {
                 }
             }
         });
-
-        try {
-            curator.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL_SEQUENTIAL)
-                    .forPath(path, data);
-        } catch (Exception e) {
-            LOGGER.error("creatNode fail!", e);
-        }
     }
 
     @Nullable
@@ -99,6 +98,7 @@ public class ZkClient {
     public void refreshNodesInBackground(String path, Map<String, Integer> map) {
         pathChildrenCache = new PathChildrenCache(curator, path, true);
         pathChildrenCache.getListenable().addListener((CuratorFramework client, PathChildrenCacheEvent e) -> {
+            LOGGER.info("refresh Node State:[{}]", e.getType().toString());
             switch (e.getType()) {
                 case CHILD_ADDED:
                     LOGGER.debug("CHILD_ADDED");

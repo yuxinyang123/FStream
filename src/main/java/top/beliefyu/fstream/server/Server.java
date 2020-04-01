@@ -27,7 +27,7 @@ public class Server {
     }
 
     private static void init() {
-        zkClient = new ZkClient("127.0.0.1", 2181);
+        zkClient = new ZkClient("192.168.2.129", 2181);
         grpcServer = new GrpcServer(6666, new ServerGrpcService());
         zkClient.start();
     }
