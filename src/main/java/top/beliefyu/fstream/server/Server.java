@@ -34,7 +34,7 @@ public class Server {
 
 
     private static void listeningRegisteredServices() {
-        serverService.listenAllRegisteredServicesFromZk(zkClient, "node");
+        serverService.listenAllRegisteredServicesFromZk(zkClient, "/node");
     }
 
     private static void grpcServerStartAndBlockUntilShutdown() {
