@@ -4,6 +4,11 @@ import io.grpc.stub.StreamObserver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.beliefyu.fstream.rpc.*;
+import top.beliefyu.fstream.server.service.ServerService;
+import top.beliefyu.fstream.server.service.ServerService.PhysicsExecution;
+import top.beliefyu.fstream.util.SerializableUtil;
+
+import static top.beliefyu.fstream.util.SerializableUtil.toObject;
 
 /**
  * GrpcServer
@@ -42,12 +47,13 @@ public class NodeGrpcService extends RpcServerGrpc.RpcServerImplBase {
     @Override
     public void submitPhysicsExecution(PhysicsExecutionRequest request, StreamObserver<PhysicsExecutionResponse> responseObserver) {
         responseObserver.onNext(PhysicsExecutionResponse.newBuilder().setMsg("success").build());
-        dealWithPhysicsExecution();
+        dealWithPhysicsExecution(toObject(request.getPhysicsExecution().toByteArray()));
         responseObserver.onCompleted();
         logger.debug("receive a physicsExecution");
     }
 
-    private void dealWithPhysicsExecution() {
+    private void dealWithPhysicsExecution(PhysicsExecution physicsExecution) {
         //todo 处理PhysicsExecutionRequest
+
     }
 }

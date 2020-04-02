@@ -4,8 +4,8 @@ import top.beliefyu.fstream.common.grpc.GrpcServer;
 import top.beliefyu.fstream.common.zk.ZkClient;
 import top.beliefyu.fstream.node.grpc.NodeGrpcService;
 import top.beliefyu.fstream.node.service.NodeService;
-import top.beliefyu.fstream.server.grpc.ServerGrpcService;
-import top.beliefyu.fstream.server.service.ServerService;
+
+import java.util.UUID;
 
 /**
  * Node
@@ -16,10 +16,9 @@ import top.beliefyu.fstream.server.service.ServerService;
  */
 public class Node {
 
+    private static final String uid = UUID.randomUUID().toString();
     private static ZkClient zkClient;
-
     private static GrpcServer grpcServer;
-
     private static NodeService nodeService = new NodeService();
 
     public static void main(String[] args) {
@@ -35,7 +34,7 @@ public class Node {
     }
 
     private static void registerInZk() {
-
+        nodeService.register(zkClient, uid);
     }
 
     private static void grpcServerStartAndBlockUntilShutdown() {
