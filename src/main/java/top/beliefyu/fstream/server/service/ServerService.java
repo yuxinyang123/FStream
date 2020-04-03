@@ -57,6 +57,9 @@ public class ServerService {
         }
         logger.debug("getOperatorHostMap:[{}]", operatorHostMap);
 
+        //生成taskId
+        String taskId = UUID.randomUUID().toString();
+
         //todo transfer2PhysicsExecutions
         List<PhysicsExecution> physicsExecutions = new ArrayList<>();
         for (DataStream stream : treeNode) {
@@ -70,10 +73,11 @@ public class ServerService {
                     .setHost(operatorHostMap.get(stream.getOperator()))
                     .setOperator(stream.getOperator())
                     .setName(stream.getName())
-                    .setUid(stream.getUid());
+                    .setUid(stream.getUid())
+                    .setTaskId(taskId);
             physicsExecutions.add(physicsExecution);
         }
-        logger.info("transfer 2 PhysicsExecutions:[{}]", physicsExecutions);
+        logger.info("taskId:[{}],transfer 2 PhysicsExecutions:[{}]", taskId, physicsExecutions);
 
         return physicsExecutions;
 
@@ -105,7 +109,7 @@ public class ServerService {
 
     public class Task implements Serializable {
         private List<PhysicsExecution> physicsExecutions;
-        private String id = UUID.randomUUID().toString();
+        private String id;
     }
 
     public class PhysicsExecution implements Serializable {
@@ -117,6 +121,8 @@ public class ServerService {
 
         private String name;
         private String uid;
+
+        private String taskId;
 
         public PhysicsExecution() {
         }
@@ -177,6 +183,15 @@ public class ServerService {
             return this;
         }
 
+        public String getTaskId() {
+            return taskId;
+        }
+
+        public PhysicsExecution setTaskId(String taskId) {
+            this.taskId = taskId;
+            return this;
+        }
+
         @Override
         public String toString() {
             return "PhysicsExecution{" +
@@ -186,6 +201,7 @@ public class ServerService {
                     ", operator=" + operator +
                     ", name='" + name + '\'' +
                     ", uid='" + uid + '\'' +
+                    ", taskId='" + taskId + '\'' +
                     '}';
         }
     }
