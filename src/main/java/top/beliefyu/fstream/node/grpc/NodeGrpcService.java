@@ -3,10 +3,10 @@ package top.beliefyu.fstream.node.grpc;
 import io.grpc.stub.StreamObserver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import top.beliefyu.fstream.node.Node;
+import top.beliefyu.fstream.node.service.NodeService;
 import top.beliefyu.fstream.rpc.*;
-import top.beliefyu.fstream.server.service.ServerService;
 import top.beliefyu.fstream.server.service.ServerService.PhysicsExecution;
-import top.beliefyu.fstream.util.SerializableUtil;
 
 import static top.beliefyu.fstream.util.SerializableUtil.toObject;
 
@@ -53,7 +53,8 @@ public class NodeGrpcService extends RpcServerGrpc.RpcServerImplBase {
     }
 
     private void dealWithPhysicsExecution(PhysicsExecution physicsExecution) {
-        //todo 处理PhysicsExecutionRequest
-
+        NodeService nodeService = Node.getNodeService();
+        nodeService.initBuffer(physicsExecution.getUid(),!physicsExecution.getUpstreamHost().isEmpty());
+        nodeService.taskRecordInMap(physicsExecution);
     }
 }
