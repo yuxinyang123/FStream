@@ -55,6 +55,7 @@ public class NodeService {
      */
     public void taskRecordInMap(PhysicsExecution physicsExecution) {
         physicsExecutionMap.put(physicsExecution.getUid(), physicsExecution);
+        logger.debug("operatorUid:[{}]",physicsExecution.getUid());
     }
 
     //todo 源算子的单独处理
