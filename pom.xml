@@ -25,7 +25,7 @@
         <guava-version>28.2-jre</guava-version>
 
         <slf4j-version>1.7.30</slf4j-version>
-        <log4j-version>2.7</log4j-version>
+        <log4j-version>2.13.3</log4j-version>
 
         <java.version>1.8</java.version>
         <grpc.version>1.12.0</grpc.version>
